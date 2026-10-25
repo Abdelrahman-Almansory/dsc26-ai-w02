@@ -5,6 +5,7 @@ DSC Summer Internship 2026 · AI & Deep Tech track · Week 2 · expected time 2�
 ## Scenario
 
 Rawaj Pay's data team has sent a two-month extract of instant transfers with a mule label.
+
 Dina, Head of Fraud, wants two answers before anyone trains a model: **can this data be
 trusted**, and once there is a score, **where should the line be drawn** so her five analysts
 are not buried? You will write a small, well-tested library that answers both. No model
@@ -81,15 +82,15 @@ these keys:
 
 **Clarifications** (these remove ambiguity; the grader follows them):
 
-- *Timestamps.* In the grader's data, the valid values of a time column all share one ISO-like
+- _Timestamps._ In the grader's data, the valid values of a time column all share one ISO-like
   format, as in the sample (`2026-09-01 10:00`). `pd.to_datetime(..., errors="coerce")` is a
   fine way to parse. Impossible dates such as `2026-02-30 10:00` count as bad. A missing or blank
   value is not a bad timestamp.
-- *`time_range`* strings may be naive (`2026-09-01T10:00:00`) or UTC (`2026-09-01T10:00:00+00:00`);
+- _`time_range`_ strings may be naive (`2026-09-01T10:00:00`) or UTC (`2026-09-01T10:00:00+00:00`);
   anything `pd.Timestamp(...)` reads back as the right instant is accepted.
-- *Leak check (a)* needs both classes among the column's non-missing labelled values. If they all
+- _Leak check (a)_ needs both classes among the column's non-missing labelled values. If they all
   come from one class, ROC AUC is undefined: (a) does not apply (do not crash), but (b) still can.
-- *"A column with a single distinct value is never a suspect"*: here **missing counts as a
+- _"A column with a single distinct value is never a suspect"_: here **missing counts as a
   value**. The rule covers only columns that are the same in every row, such as `currency`
   (always `EGP`) or a column that is entirely blank; for those, both checks are skipped. A column
   like the session's `case_closed_at`, which holds one date for every positive and is blank
@@ -166,23 +167,23 @@ grader runs per task per day; your best attempt counts.
 The hidden tests probe the edge cases this README states but the public tests do not cover,
 and include property tests on random inputs, so hard-coded answers do not pass.
 
-| Test name | What it checks | Points |
-|---|---|---|
-| `audit_counts_rows_and_duplicates` | Row count, duplicate IDs (sorted, missing IDs ignored), duplicate rows | 8 |
-| `audit_blank_strings_are_missing` | `""`, whitespace, `None` and NaN all count as missing; numeric columns unaffected | 7 |
-| `audit_constant_columns_ignore_missing` | One value plus blanks is constant; the target is never listed | 5 |
-| `audit_unlabelled_rows` | Missing labels counted; positive rate on labelled rows only; all-unlabelled gives 0.0 | 7 |
-| `audit_bad_timestamps_and_range` | Unparseable values counted, missing ones not; ISO range; all-bad gives `[None, None]` | 5 |
-| `audit_flags_value_leak` | A numeric or boolean near-copy of the label, and its inverse, are flagged | 10 |
-| `audit_flags_missingness_leak` | A column filled only for positives (or blank only for positives) is flagged | 8 |
-| `audit_no_false_alarms_on_honest_features` | Honest features never flagged; the 20-row and 20-value minimums; one class flags nothing | 6 |
-| `confusion_ties_at_threshold` | Scores equal to the threshold are flagged; above the max flags nothing | 7 |
-| `precision_recall_zero_division` | No flags, no positives, all positives | 5 |
-| `precision_at_k_ties_stable_and_k_gt_n` | Tied scores keep input order; `k > n`; `k <= 0` raises | 7 |
-| `best_threshold_matches_brute_force` | Random cases against a brute-force search, including the tie rule and `inf` | 10 |
-| `threshold_for_precision_lowest_valid_or_none` | Non-monotonic precision; unreachable target returns `None` | 7 |
-| `input_validation` | Every function raises `ValueError` on bad input | 4 |
-| `framing_and_ai_usage_present` | `FRAMING.md` headings with text; `AI_USAGE.md` filled in | 4 |
+| Test name                                      | What it checks                                                                           | Points |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------------- | ------ |
+| `audit_counts_rows_and_duplicates`             | Row count, duplicate IDs (sorted, missing IDs ignored), duplicate rows                   | 8      |
+| `audit_blank_strings_are_missing`              | `""`, whitespace, `None` and NaN all count as missing; numeric columns unaffected        | 7      |
+| `audit_constant_columns_ignore_missing`        | One value plus blanks is constant; the target is never listed                            | 5      |
+| `audit_unlabelled_rows`                        | Missing labels counted; positive rate on labelled rows only; all-unlabelled gives 0.0    | 7      |
+| `audit_bad_timestamps_and_range`               | Unparseable values counted, missing ones not; ISO range; all-bad gives `[None, None]`    | 5      |
+| `audit_flags_value_leak`                       | A numeric or boolean near-copy of the label, and its inverse, are flagged                | 10     |
+| `audit_flags_missingness_leak`                 | A column filled only for positives (or blank only for positives) is flagged              | 8      |
+| `audit_no_false_alarms_on_honest_features`     | Honest features never flagged; the 20-row and 20-value minimums; one class flags nothing | 6      |
+| `confusion_ties_at_threshold`                  | Scores equal to the threshold are flagged; above the max flags nothing                   | 7      |
+| `precision_recall_zero_division`               | No flags, no positives, all positives                                                    | 5      |
+| `precision_at_k_ties_stable_and_k_gt_n`        | Tied scores keep input order; `k > n`; `k <= 0` raises                                   | 7      |
+| `best_threshold_matches_brute_force`           | Random cases against a brute-force search, including the tie rule and `inf`              | 10     |
+| `threshold_for_precision_lowest_valid_or_none` | Non-monotonic precision; unreachable target returns `None`                               | 7      |
+| `input_validation`                             | Every function raises `ValueError` on bad input                                          | 4      |
+| `framing_and_ai_usage_present`                 | `FRAMING.md` headings with text; `AI_USAGE.md` filled in                                 | 4      |
 
 Late policy: ×1.0 within 72 hours of the session starting, ×0.6 in the following 7 days, ×0.5
 after that until Thu 3 Dec 23:59. During W5 (7–13 Nov) you can resubmit at ×1.0.
